@@ -12,6 +12,15 @@ const userLogin = async (username,password) => {
     );
   };
 
+// TODO: Remove this function
+const userLoginWithFaceId = async ( image ) => {
+  return await loginServicesAxiosInstance.post(
+    `/api/face_id_login_face_id/`,
+    { image }
+  );
+};
+
 export {
-    userLogin
+    userLogin,
+    userLoginWithFaceId
 }

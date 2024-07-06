@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Button, TextField, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { FaRegSmile } from 'react-icons/fa';
 import { userLogin } from '../../services/api.services';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
-  const navigate = useNavigate(); // Initialize useNavigate
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,6 +33,10 @@ const LoginPage = () => {
     }
   };
 
+  const handleLoginWithFaceId = () => {
+    navigate('/faceid');
+  };
+
   const handleCloseSnackbar = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -48,6 +52,7 @@ const LoginPage = () => {
             variant="outlined"
             startIcon={<FaRegSmile />}
             className="w-full p-3 text-white bg-blue-500 rounded-full hover:bg-blue-600"
+            onClick={handleLoginWithFaceId}
           >
             Login with Face ID
           </Button>
