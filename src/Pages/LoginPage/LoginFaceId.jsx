@@ -12,7 +12,7 @@ const CameraLoginPage = () => {
   useEffect(() => {
     startCamera();
     return () => {
-      if (videoRef.current.srcObject) {
+      if (videoRef.current?.srcObject) {
         const stream = videoRef.current.srcObject;
         const tracks = stream.getTracks();
         tracks.forEach((track) => track.stop());
@@ -46,7 +46,10 @@ const CameraLoginPage = () => {
 
   const retakeImage = () => {
     setCapturedImage(null);
-    videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+    if (videoRef.current?.srcObject) {
+      const tracks = videoRef.current.srcObject.getTracks();
+      tracks.forEach((track) => track.stop());
+    }
     startCamera();
   };
 
@@ -66,7 +69,7 @@ const CameraLoginPage = () => {
       formData.append("image", blob);
       //   const response = await userLoginWithFaceId(formData);
       //   console.log("Face ID Login Response:", response.data);
-      const response = true;
+      const response = true; // Mocking the response for testing purposes
       navigate("/home");
     } catch (error) {
       console.error("Face ID Login Error:", error);
