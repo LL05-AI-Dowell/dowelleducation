@@ -1,13 +1,25 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { Button, CircularProgress } from "@mui/material";
+import { useNavigate, useLocation } from "react-router-dom";
+import { UserContext } from "../../hooks/context";
 import { userLoginWithFaceId } from "../../services/api.services";
-import { useNavigate } from "react-router-dom";
 
 const CameraLoginPage = () => {
   const navigate = useNavigate();
   const [capturedImage, setCapturedImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const videoRef = useRef(null);
+  const { setUserInfo, setUserRoles } = useContext(UserContext);
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const workspaceId = searchParams.get('workspace_id');
+
+  useEffect(() => {
+    if (!workspaceId) {
+      navigate('/restricted-access');
+    }
+  }, [location, navigate, workspaceId]);
 
   useEffect(() => {
     startCamera();
@@ -67,10 +79,14 @@ const CameraLoginPage = () => {
       setLoading(true);
       const formData = new FormData();
       formData.append("image", blob);
-      //   const response = await userLoginWithFaceId(formData);
-      //   console.log("Face ID Login Response:", response.data);
-      const response = true; // Mocking the response for testing purposes
-      navigate("/home");
+      const response = await userLoginWithFaceId(formData);
+      console.log("Face ID Login Response:", response);
+      const { userinfo, orgs_n_roles } = response.data.response[0];
+
+      setUserInfo(userinfo);
+      setUserRoles(orgs_n_roles);
+
+      navigate(`/home/?workspace_id=${workspaceId}`);
     } catch (error) {
       console.error("Face ID Login Error:", error);
     } finally {
@@ -83,10 +99,7 @@ const CameraLoginPage = () => {
       {!capturedImage ? (
         <div className="w-full max-w-md p-4 bg-white rounded-lg shadow-md">
           <div className="flex flex-col items-center space-y-4">
-            <video
-              ref={videoRef}
-              className="w-full rounded-lg shadow-md"
-            ></video>
+            <video ref={videoRef} className="w-full rounded-lg shadow-md"></video>
             <Button
               variant="contained"
               color="primary"
