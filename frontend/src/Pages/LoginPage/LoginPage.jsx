@@ -1,13 +1,12 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, TextField, Snackbar, Alert, CircularProgress } from '@mui/material';
 import { FaRegSmile } from 'react-icons/fa';
 import { userLogin } from '../../services/api.services';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { UserContext } from '../../hooks/context';
+import { storeToken } from '../../utils/helper';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const { setUserInfo, setUserRoles } = useContext(UserContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -18,25 +17,26 @@ const LoginPage = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const workspaceId = searchParams.get('workspace_id');
+  const institutionName = searchParams.get('institution_name');
 
   useEffect(() => {
     if (!workspaceId) {
-      navigate('/restricted-access');
+      navigate('/dowelleducation/restricted-access');
     }
-  }, [location, navigate, workspaceId]);
+  }, [location, navigate, workspaceId, institutionName]);
 
   const handleLogin = async () => {
     setLoading(true);
     try {
-      const response = await userLogin(username, password);
+      const response = await userLogin(username, password, workspaceId, institutionName);
+      console.log(response);
       setSnackbarSeverity('success');
-      setSnackbarMessage('Login successful!');
+      setSnackbarMessage(response.data.message);
 
-      const userInfo = response.data.response[0].userinfo;
-      const userRoles = response.data.response[0].orgs_n_roles;
-      setUserInfo(userInfo);
-      setUserRoles(userRoles);
-      navigate(`/home/?workspace_id=${workspaceId}`);
+      const { accessToken } = response.data;
+      storeToken(accessToken);
+
+      navigate(`/dowelleducation/home/?workspace_id=${workspaceId}&institution_name=${institutionName}`);
     } catch (error) {
       setSnackbarSeverity('error');
       setSnackbarMessage('Login failed: Invalid username or password');
@@ -48,7 +48,8 @@ const LoginPage = () => {
   };
 
   const handleLoginWithFaceId = () => {
-    navigate(`/faceid/?workspace_id=${workspaceId}`);
+    // navigate(`/dowelleducation/faceid/?workspace_id=${workspaceId}`);
+    setSnackbarSeverity('Working on Progress');
   };
 
   const handleCloseSnackbar = (event, reason) => {
