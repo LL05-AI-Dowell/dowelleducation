@@ -30,8 +30,57 @@ const userProfile = async () => {
     {headers}
   )
 }
+
+const getScaleLinkForLearningLevelIndex = async (workspaceId) => {
+
+  const headers = {
+    Authorization: `Bearer ${retrieveToken()}`,
+  }
+  return await servicesAxiosInstance.get(
+    `/api/v1/scale-link/${workspaceId}`,
+    {headers}
+  );
+}
+
+const saveLearningIndexLink = async (workspaceId,username) =>{
+  const headers = {
+    Authorization: `Bearer ${retrieveToken()}`,
+  }
+
+  return await servicesAxiosInstance.post(
+    `/api/v1/scale-link/save`,
+    {workspaceId, username},
+    {headers}
+  );
+}
+
+const updateScaleLinkId = async (workspaceId,linkId) => {
+  const headers = {
+    Authorization: `Bearer ${retrieveToken()}`,
+  }
+
+  return await servicesAxiosInstance.put(
+    `/api/v1/scale-link/update-scale-link/?workspaceId=${workspaceId}&linkId=${linkId}`,
+    {headers}
+  );
+}
+
+const getActiveLinkForScale = async (workspaceId) =>{
+  const headers = {
+    Authorization: `Bearer ${retrieveToken()}`,
+  }
+
+  return await servicesAxiosInstance.get(
+    `/api/v1/scale-link/active-links/${workspaceId}`,
+    {headers}
+  );
+}
 export {
   userLogin,
   userLogout,
-  userProfile
+  userProfile,
+  getScaleLinkForLearningLevelIndex,
+  saveLearningIndexLink,
+  updateScaleLinkId,
+  getActiveLinkForScale
 }

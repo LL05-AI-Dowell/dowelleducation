@@ -20,7 +20,7 @@ const LoginPage = () => {
   const institutionName = searchParams.get('institution_name');
 
   useEffect(() => {
-    if (!workspaceId) {
+    if (!workspaceId || !institutionName) {
       navigate('/dowelleducation/restricted-access');
     }
   }, [location, navigate, workspaceId, institutionName]);

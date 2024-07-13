@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Button, Typography, Snackbar, Modal, Backdrop, Fade } from '@mui/material';
 import { FaUser, FaSignOutAlt, FaCog } from 'react-icons/fa';
-import { scaleURL, ticketingSystemURL } from '../../services/constant';
+import { ticketingSystemURL } from '../../services/constant';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { retrieveToken, decodeTokens, removeToken } from '../../utils/helper';
-import { userLogout, userProfile } from '../../services/api.services';
+import { userLogout, userProfile, getActiveLinkForScale } from '../../services/api.services';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const HomePage = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const workspaceId = searchParams.get('workspace_id');
-  const institutionName = searchParams.get('institution_name').replace(/_/g, " ");
+  const institutionName = searchParams.get('institution_name')?.replace(/_/g, " ");
 
   useEffect(() => {
     if (!workspaceId || !institutionName) {
@@ -66,6 +66,25 @@ const HomePage = () => {
     setOpenModal(false);
   };
 
+  const handleOpenLearningLevelIndex = async () => {
+    try {
+      const response = await getActiveLinkForScale(workspaceId);
+      if (response.data.success) {
+        window.open(response.data.links[0], "_blank");
+      } else {
+        setSnackbarMessage('No active links found, Please contact the teacher in charge');
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      setSnackbarMessage('Please contact the teacher in charge');
+      setOpenSnackbar(true);
+    }
+  };
+
+  const handleOpenDashboardPage = () => {
+    navigate(`/dowelleducation/dashboard/?workspace_id=${workspaceId}&institution_name=${institutionName}`);
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-50 to-purple-50 text-gray-800 p-8">
       <div className="max-w-lg bg-white rounded-lg shadow-lg p-8 flex flex-col items-center">
@@ -87,7 +106,6 @@ const HomePage = () => {
             startIcon={<FaSignOutAlt />}
             onClick={handleLogout}
           >
-            
           </Button>
           {isAdmin && (
             <Button
@@ -96,11 +114,8 @@ const HomePage = () => {
               className="p-4 md:p-6 text-white flex items-center justify-center"
               style={{ maxWidth: '200px', borderRadius: '25px', fontSize: '1rem', backgroundColor: '#005734' }}
               startIcon={<FaCog />}
-              onClick={() => {
-                console.log('Navigate to settings page or perform settings action');
-              }}
+              onClick={handleOpenDashboardPage}
             >
-             
             </Button>
           )}
         </div>
@@ -128,7 +143,7 @@ const HomePage = () => {
             fullWidth
             className="p-4 md:p-6 text-white"
             style={{ maxWidth: '250px', borderRadius: '25px', fontSize: '1rem', backgroundColor: '#005734' }}
-            onClick={() => window.open(scaleURL, "_blank")}
+            onClick={handleOpenLearningLevelIndex}
           >
             Provide Feedback
           </Button>

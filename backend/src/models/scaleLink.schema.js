@@ -29,6 +29,12 @@ const scaleLinkSchema = new mongoose.Schema({
         isActive: {
             type: Boolean,
             default: false,
+        },
+        channelDisplayName: {
+            type: String
+        },
+        instanceDisplayName: {
+            type: String
         }
     }]
 },{
