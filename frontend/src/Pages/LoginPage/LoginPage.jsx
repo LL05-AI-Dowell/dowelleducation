@@ -38,9 +38,11 @@ const LoginPage = () => {
 
       navigate(`/dowelleducation/home/?workspace_id=${workspaceId}&institution_name=${institutionName}`);
     } catch (error) {
-      setSnackbarSeverity('error');
-      setSnackbarMessage('Login failed: Invalid username or password');
       console.error('Login failed:', error);
+
+      const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
+      setSnackbarSeverity('error');
+      setSnackbarMessage(errorMessage);
     } finally {
       setLoading(false);
       setSnackbarOpen(true);

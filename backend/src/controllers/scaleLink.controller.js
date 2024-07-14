@@ -40,9 +40,9 @@ const saveScaleLink = asyncHandler(async (req, res) => {
     }
 
     const scaleData = getScaleLink.data.scale_data;
+    let newLinksCreated = false;
 
     for (const scale of scaleData) {
-        
         const existingScaleLink = await ScaleLink.findOne({
             workspaceId: workspaceId,
             scaleId: scale.scale_id,
@@ -69,7 +69,6 @@ const saveScaleLink = asyncHandler(async (req, res) => {
             });
         });
 
-      
         const newLinks = await ScaleLink.create({
             workspaceId,
             channelCount: scale.no_of_channels,
@@ -86,15 +85,23 @@ const saveScaleLink = asyncHandler(async (req, res) => {
             });
         }
 
+        newLinksCreated = true;
         console.log(`Scale link ${scale.scale_name} saved successfully.`);
     }
 
-    
+    if (!newLinksCreated) {
+        return res.status(200).json({
+            success: true,
+            message: "All scale links already exist. No new scale links were created."
+        });
+    }
+
     res.status(201).json({
         success: true,
         message: "Scale links saved successfully"
     });
 });
+
 
 
 
@@ -118,7 +125,7 @@ const getALlScaleLinks = asyncHandler(async(req, res)=>{
 
     res.status(200).json({
         success: true,
-        message: "Scale links fetched successfully",
+        message: "All scales fetched successfully",
         response: scaleLinks
     });
 })

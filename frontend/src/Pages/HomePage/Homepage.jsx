@@ -18,7 +18,7 @@ const HomePage = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const workspaceId = searchParams.get('workspace_id');
-  const institutionName = searchParams.get('institution_name')?.replace(/_/g, " ");
+  const institutionName = searchParams.get('institution_name');
 
   useEffect(() => {
     if (!workspaceId || !institutionName) {
@@ -133,7 +133,7 @@ const HomePage = () => {
             className="mb-8"
             style={{ fontFamily: 'Roboto, sans-serif', fontWeight: '500' }}
           >
-            Welcome to {institutionName}
+            Welcome to {institutionName?.replace(/_/g, " ")}
           </Typography>
           <div className="h-px w-full bg-slate-200 my-4"></div>
         </div>

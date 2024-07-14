@@ -39,13 +39,16 @@ const Dashboard = () => {
   const institutionName = searchParams.get("institution_name")?.replace(/_/g, " ");
 
   // const workspaceId = "653637a4950d738c6249aa9a";
-  const username = decodeTokens(retrieveToken())?.myDecodedToken.username;
+  // const username = decodeTokens(retrieveToken())?.myDecodedToken.username;
+  const username = "CustomerSupport";
 
   const handleGetLearningIndexScale = async () => {
     try {
       setLoading(true);
       const response = await getScaleLinkForLearningLevelIndex(workspaceId);
       if (response.data.success) {
+        setSnackbarMessage(response.data.message);
+        setSnackbarOpen(true);
         setScales(response.data.response);
       } else {
         setSnackbarMessage("Failed to fetch learning index scale links");
@@ -127,7 +130,7 @@ const Dashboard = () => {
       const response = await saveLearningIndexLinkApi(workspaceId, username);
 
       if (response.data.success) {
-        setSnackbarMessage("Learning index link saved successfully");
+        setSnackbarMessage(response.data.message);
         setSnackbarOpen(true);
       } else {
         setSnackbarMessage("Failed to save learning index link");
@@ -159,12 +162,19 @@ const Dashboard = () => {
       <div className="p-6 bg-gray-50">
         {showNotice && (
           <div className="flex justify-center items-center bg-yellow-200 text-yellow-800 p-2 rounded-lg mb-4">
-            Get new scale links by clicking the <AddIcon /> icon.
+            Is any scale is missing ? Click to update it 
+            <IconButton color="inherit" onClick={handleSaveLearningIndexLink}>
+              <AddIcon />
+            </IconButton>.
           </div>
         )}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading ? (
             <CircularProgress color="primary" />
+          ) : scales.length === 0 ? (
+            <Typography variant="h6" className="flex justify-center items-center text-center text-gray-600">
+              No scales found. Please create a new scale in DoWell Scale
+            </Typography>
           ) : (
             scales.map((scale) => (
               <Card
@@ -186,7 +196,7 @@ const Dashboard = () => {
                       </Typography>
                       <Typography className="text-gray-900 flex pt-1">
                         Scale Type:{" "}
-                        <span className="ml-3.5 text-gray-600">{scale.scaleType}</span>
+                        <span className="ml-3.5 text-gray-600">{scale.scaleType?.replace(/_/g, " ")}</span>
                       </Typography>
                       <div className="flex items-center mt-2">
                         <Typography className="mr-2 text-gray-700">Status:</Typography>
