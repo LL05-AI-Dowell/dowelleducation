@@ -36,11 +36,11 @@ const Dashboard = () => {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const workspaceId = searchParams.get("workspace_id");
-  const institutionName = searchParams.get("institution_name")?.replace(/_/g, " ");
+  const institutionName = searchParams.get("institution_name");
 
-  // const workspaceId = "653637a4950d738c6249aa9a";
-  // const username = decodeTokens(retrieveToken())?.myDecodedToken.username;
-  const username = "CustomerSupport";
+  // const workspaceId = "66879a901c299b49c227088b";
+  const username = decodeTokens(retrieveToken())?.myDecodedToken.username;
+  // const username = "samantaeducation";
 
   const handleGetLearningIndexScale = async () => {
     try {
@@ -70,7 +70,7 @@ const Dashboard = () => {
 
     const tokenStatus = decodeTokens(retrieveToken());
     if (tokenStatus.isMyTokenExpired) {
-      navigate(`/dowelleducation/?workspace_id=${workspaceId}&institution_name=${institutionName}`);
+      navigate(`/dowelleducation/?workspace_id=${workspaceId}&institution_name=${institutionName?.replace(/_/g, " ")}`);
     }
 
     setShowNotice(true);
@@ -99,6 +99,7 @@ const Dashboard = () => {
       if (response.data.success) {
         setSnackbarMessage(`Link ${isActive ? "activated" : "deactivated"} successfully`);
         setSnackbarOpen(true);
+        handleGetLearningIndexScale()
         const updatedScales = scales.map((scale) => {
           if (scale._id === selectedScale._id) {
             const updatedLinks = scale.links.map((link) => {
@@ -132,6 +133,7 @@ const Dashboard = () => {
       if (response.data.success) {
         setSnackbarMessage(response.data.message);
         setSnackbarOpen(true);
+        handleGetLearningIndexScale()
       } else {
         setSnackbarMessage("Failed to save learning index link");
         setSnackbarOpen(true);
