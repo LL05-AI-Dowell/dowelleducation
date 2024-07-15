@@ -1,7 +1,7 @@
 import axios from "axios";
 import { retrieveToken } from "../utils/helper";
 const servicesAxiosInstance = axios.create({
-  baseURL: "http://localhost:5000"
+  baseURL: "http://backend_container:5000"
 });
 
 const userLogin = async (username, password, workspaceId, institutionName) => {
