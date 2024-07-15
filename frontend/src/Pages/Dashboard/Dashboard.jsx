@@ -75,7 +75,7 @@ const Dashboard = () => {
 
     setShowNotice(true);
     const noticeTimeout = setTimeout(() => {
-      setShowNotice(false);
+      setShowNotice(true);
     }, 5000);
 
     return () => clearTimeout(noticeTimeout);
