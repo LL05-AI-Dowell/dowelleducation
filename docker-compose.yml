@@ -31,7 +31,7 @@ services:
       - backend
 
   nginx:
-    build: 
+    build:
       context: ./nginx
       dockerfile: Dockerfile
     container_name: nginx
