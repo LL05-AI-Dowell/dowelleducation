@@ -7,6 +7,8 @@ services:
       - '27017:27017'
     volumes:
       - ./data/db:/data/db
+    networks:
+      - queue-net
 
   backend:
     build: ./backend
@@ -16,6 +18,8 @@ services:
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
+    networks:
+      - queue-net
     depends_on:
       - mongo
 
@@ -27,6 +31,8 @@ services:
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
+    networks:
+      - queue-net
     depends_on:
       - backend
 
@@ -44,6 +50,11 @@ services:
       - /etc/letsencrypt/live/www.samantaedu.uxlivinglab.online/fullchain.pem:/etc/letsencrypt/live/www.samantaedu.uxlivinglab.online/fullchain.pem:ro
       - /etc/letsencrypt/live/www.samantaedu.uxlivinglab.online/privkey.pem:/etc/letsencrypt/live/www.samantaedu.uxlivinglab.online/privkey.pem:ro
     restart: always
+    networks:
+      - queue-net
     depends_on:
       - backend
       - frontend
+  networks:
+    queue-net:
+      external: true
