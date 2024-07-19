@@ -55,6 +55,6 @@ services:
     depends_on:
       - backend
       - frontend
-  networks:
-    queue-net:
-      external: true
+networks:
+  queue-net:
+    external: true
