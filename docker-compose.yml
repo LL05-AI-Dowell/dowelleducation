@@ -17,7 +17,7 @@ services:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
     depends_on:
-      - mongo_container
+      - mongo
 
   frontend:
     build: ./frontend
@@ -28,7 +28,7 @@ services:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
     depends_on:
-      - backend_container
+      - backend
 
   nginx:
     build:
@@ -45,5 +45,5 @@ services:
       - /etc/letsencrypt/live/www.samantaedu.uxlivinglab.online/privkey.pem:/etc/letsencrypt/live/www.samantaedu.uxlivinglab.online/privkey.pem:ro
     restart: always
     depends_on:
-      - backend_container
-      - frontend_container
+      - backend
+      - frontend
