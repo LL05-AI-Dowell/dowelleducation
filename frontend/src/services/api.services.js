@@ -1,7 +1,7 @@
 import axios from "axios";
 import { retrieveToken } from "../utils/helper";
 const servicesAxiosInstance = axios.create({
-  baseURL: "http://backend_container:5000"
+  baseURL: "https://www.samantaedu.uxlivinglab.online"
 });
 
 const userLogin = async (username, password, workspaceId, institutionName) => {
