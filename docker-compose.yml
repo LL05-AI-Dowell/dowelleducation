@@ -57,4 +57,4 @@ services:
       - frontend
 networks:
   queue-net:
-    external: true
+    driver: bridge
